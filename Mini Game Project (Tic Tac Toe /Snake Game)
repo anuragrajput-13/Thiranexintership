@@ -1,0 +1,167 @@
+#include <iostream>
+using namespace std;
+
+char board[3][3];
+
+// Board initialize karna
+void initializeBoard() {
+    char num = '1';
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            board[i][j] = num++;
+        }
+    }
+}
+
+// Board display karna
+void displayBoard() {
+    cout << "\n";
+
+    for (int i = 0; i < 3; i++) {
+        cout << " ";
+        for (int j = 0; j < 3; j++) {
+            cout << board[i][j];
+
+            if (j < 2)
+                cout << " | ";
+        }
+
+        cout << "\n";
+
+        if (i < 2)
+            cout << "---|---|---\n";
+    }
+
+    cout << "\n";
+}
+
+// Check winner
+bool checkWinner(char player) {
+
+    // Rows
+    for (int i = 0; i < 3; i++) {
+        if (board[i][0] == player &&
+            board[i][1] == player &&
+            board[i][2] == player)
+            return true;
+    }
+
+    // Columns
+    for (int j = 0; j < 3; j++) {
+        if (board[0][j] == player &&
+            board[1][j] == player &&
+            board[2][j] == player)
+            return true;
+    }
+
+    // Diagonal
+    if (board[0][0] == player &&
+        board[1][1] == player &&
+        board[2][2] == player)
+        return true;
+
+    if (board[0][2] == player &&
+        board[1][1] == player &&
+        board[2][0] == player)
+        return true;
+
+    return false;
+}
+
+// Check draw
+bool checkDraw() {
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (board[i][j] != 'X' &&
+                board[i][j] != 'O')
+                return false;
+        }
+    }
+
+    return true;
+}
+
+// Make move
+bool makeMove(int position, char player) {
+
+    if (position < 1 || position > 9)
+        return false;
+
+    int row = (position - 1) / 3;
+    int col = (position - 1) % 3;
+
+    if (board[row][col] == 'X' ||
+        board[row][col] == 'O')
+        return false;
+
+    board[row][col] = player;
+
+    return true;
+}
+
+// Main game
+void playGame() {
+
+    initializeBoard();
+
+    char player = 'X';
+    int position;
+
+    while (true) {
+
+        displayBoard();
+
+        cout << "Player " << player;
+        cout << ", enter position (1-9): ";
+        cin >> position;
+
+        if (!makeMove(position, player)) {
+            cout << "\nInvalid move! Try again.\n";
+            continue;
+        }
+
+        // Winner check
+        if (checkWinner(player)) {
+            displayBoard();
+            cout << "Player " << player << " wins! Congratulations!\n";
+            break;
+        }
+
+        // Draw check
+        if (checkDraw()) {
+            displayBoard();
+            cout << "Game Draw!\n";
+            break;
+        }
+
+        // Change player
+        if (player == 'X')
+            player = 'O';
+        else
+            player = 'X';
+    }
+}
+
+int main() {
+
+    char replay;
+
+    cout << "============================";
+    cout << "\n       TIC TAC TOE";
+    cout << "\n============================\n";
+
+    do {
+
+        playGame();
+
+        cout << "\nDo you want to play again? (Y/N): ";
+        cin >> replay;
+
+    } while (replay == 'Y' || replay == 'y');
+
+    cout << "\nThank you for playing!\n";
+
+    return 0;
+}
